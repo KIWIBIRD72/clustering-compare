@@ -1,4 +1,12 @@
 dist
 .vscode
-*/__pycache__
+**/__pycache__
 .mypy_cache
+
+# Игнорировать скомпилированные Python-файлы
+*.pyc
+*.pyo
+
+# Игнорировать другие временные файлы
+*.log
+*.tmp

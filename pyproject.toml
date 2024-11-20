@@ -7,9 +7,17 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+matplotlib = "^3.9.2"
+pandas = "^2.2.3"
+pathlib = "^1.0.1"
+spacy = "^3.8.2"
 
 [tool.poetry.scripts]
-main = 'clustering.__init__:main'
+main = 'src.clustering.__init__:main'
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.13.0"
+scipy-stubs = "^1.14.1.4"
 
 [[tool.mypy.overrides]]
 module = "sklearn.*"
