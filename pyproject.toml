@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "clustering"
+version = "0.1.0"
+description = "Supervised & unsupervised image data clustering"
+authors = ["Evgeniy Trubnikov <parmesanshees@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[tool.poetry.scripts]
+main = 'clustering.__init__:main'
+
+[[tool.mypy.overrides]]
+module = "sklearn.*"
+ignore_missing_imports = true
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
