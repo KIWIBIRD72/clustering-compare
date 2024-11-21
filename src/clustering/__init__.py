@@ -1,9 +1,7 @@
 import numpy as np
-from constants.general import ROOT_DIR
 from clustering.supervised import SupervisedClassifier
 from clustering.unsupervised import UnsupervisedClassifier
 from sklearn.metrics import classification_report, accuracy_score
-from sklearn.metrics import confusion_matrix
 from numpy.typing import NDArray
 from scipy.stats import mode
 from rich import inspect
