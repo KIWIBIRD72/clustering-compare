@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from clustering.abstract.clustering import Clustering
 from numpy.typing import NDArray
 from sklearn.model_selection import train_test_split
@@ -20,12 +21,38 @@ class SupervisedClassifier(Clustering):
 
     def _dim_reduce(self, X:  NDArray[np.float64]):
         reducer = DimReducer()
-        return reducer.svd_reduce(X, n_components=self.__OPTIMAL_SVD_N)
+        return reducer.tsne_reduce(X)
 
-    def cluster(self) -> tuple[RandomForestClassifier, NDArray[np.float64], NDArray[np.float64], None]:
-        train_data = TrainData()
-        X, y = train_data.get()
+    def plot_clusters(self, X: NDArray[np.float64], y: NDArray[np.float64], title="Cluster Visualization"):
+        reducer = DimReducer()
+        # Уменьшение размерности данных до 2D
+        X_2d = reducer.svd_reduce(X, n_components=self.__OPTIMAL_SVD_N)
 
+        plt.figure(figsize=(10, 7))
+        scatter = plt.scatter(X_2d[:, 0], X_2d[:, 1],
+                              c=y, cmap='viridis', s=100, alpha=0.7)
+        plt.colorbar(scatter, label='Cluster Labels')
+
+        # Добавление меток классов для каждой точки
+        int_y = y.astype(np.int64)
+        for i, label in enumerate(int_y):
+            plt.text(
+                X_2d[i, 0],
+                X_2d[i, 1],
+                str(label),
+                fontsize=7,
+                ha='center',
+                va='center',
+                color='white',
+            )
+
+        plt.title(title)
+        plt.xlabel('PCA Component 1')
+        plt.ylabel('PCA Component 2')
+        plt.grid(True)
+        plt.show()
+
+    def cluster(self, X: NDArray[np.float64], y: NDArray[np.float64]) -> tuple[RandomForestClassifier, NDArray[np.float64], NDArray[np.float64], None]:
         X_norm = self._normalize_pixel(X)
         X_reduced = self._dim_reduce(X_norm)
 

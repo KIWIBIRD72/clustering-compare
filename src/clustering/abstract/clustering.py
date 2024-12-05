@@ -31,5 +31,5 @@ class Clustering(ABC):
     #     pass
 
     @abstractmethod
-    def cluster(self) -> tuple[RandomForestClassifier | KMeans, NDArray[np.float64], NDArray[np.float64], NDArray[np.float64] | None]:
+    def cluster(self, X: NDArray[np.float64], y: NDArray[np.float64]) -> tuple[RandomForestClassifier | KMeans, NDArray[np.float64], NDArray[np.float64], NDArray[np.float64] | None]:
         pass

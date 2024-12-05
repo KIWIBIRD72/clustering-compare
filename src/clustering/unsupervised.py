@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from numpy.typing import NDArray
 from src.clustering.abstract.clustering import Clustering
 from src.clustering.train_data import TrainData
@@ -13,8 +14,10 @@ class UnsupervisedClassifier(Clustering):
     RANDOM_STATE = 42
     CLUSTERS_AMOUNT = len(TrainDataGen.DIGITS)
 
-    def __init__(self):
+    def __init__(self, n_clusters: int):
         self.__PIXEL_NOR_VAL = 255.0
+        self.CLUSTERS_AMOUNT = n_clusters or self.CLUSTERS_AMOUNT
+        self.__OPTIMAL_SVD_N = 10  # Оптимальное значение `n_components` для svd reduce
 
     def _normalize_pixel(self, X: NDArray[np.float64]):
         return X / self.__PIXEL_NOR_VAL
@@ -23,10 +26,35 @@ class UnsupervisedClassifier(Clustering):
         reducer = DimReducer()
         return reducer.tsne_reduce(X)
 
-    def cluster(self) -> tuple[KMeans, NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
-        train_data = TrainData()
-        X, y = train_data.get()
+    def plot_clusters(self, X: NDArray[np.float64], y: NDArray[np.float64], title="Cluster Visualization"):
+        reducer = DimReducer()
+        # Уменьшаем размерность данных до 2D
+        X_2d = reducer.tsne_reduce(X)
 
+        plt.figure(figsize=(10, 7))
+        scatter = plt.scatter(X_2d[:, 0], X_2d[:, 1],
+                              c=y, cmap='viridis', s=150, alpha=0.7)
+        plt.colorbar(scatter, label='Cluster Labels')
+
+        # Добавление меток классов для каждой точки
+        for i, label in enumerate(y):
+            plt.text(
+                X_2d[i, 0],
+                X_2d[i, 1],
+                f'{str(int(label))}',
+                fontsize=6,
+                ha='center',
+                va='center',
+                color='white',
+                bbox=dict(facecolor='black', edgecolor='none',
+                          alpha=0.6, boxstyle='round,pad=0.3'),
+            )
+
+        plt.title(title)
+        plt.grid(True)
+        plt.show()
+
+    def cluster(self, X: NDArray[np.float64], y: NDArray[np.float64]) -> tuple[KMeans, NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
         X_norm = self._normalize_pixel(X)
         X_reduced = self._dim_reduce(X_norm)
 
